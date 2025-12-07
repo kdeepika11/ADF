@@ -1,0 +1,9 @@
+{
+	"name": "adf-deepika-lab",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "62a00961-d380-444b-9ff9-ea0eb4afd0a4",
+		"tenantId": "077171c6-d967-4e99-866a-72072721e6cd"
+	}
+}

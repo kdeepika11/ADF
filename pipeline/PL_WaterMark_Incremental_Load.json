@@ -1,0 +1,99 @@
+{
+	"name": "PL_WaterMark_Incremental_Load",
+	"properties": {
+		"activities": [
+			{
+				"name": "LP_WaterMark_Value",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT \nISNULL(MAX(WatermarkValue), '1900-01-01 00:00:00') AS WatermarkValue\nFROM [dbo].[ETL_Metadata]\nWHERE TableName = 'Customer';",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DsWaterMarkValue",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "Chk_Incremental_data",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "LP_WaterMark_Value",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "dataflow1",
+						"type": "DataFlowReference",
+						"parameters": {
+							"pWatermark": {
+								"value": "'@{formatDateTime(\n    activity('LP_WaterMark_Value').output.firstRow.WatermarkValue,\n    'yyyy-MM-dd HH:mm:ss'\n)}'",
+								"type": "Expression"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "Update_WaterMark_Value",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Chk_Incremental_data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[Update_Watermark]"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2025-12-07T03:39:49Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

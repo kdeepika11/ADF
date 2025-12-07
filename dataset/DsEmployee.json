@@ -1,0 +1,42 @@
+{
+	"name": "DsEmployee",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Empid",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Empname",
+				"type": "varchar"
+			},
+			{
+				"name": "Dept",
+				"type": "varchar"
+			},
+			{
+				"name": "salary",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "JoinDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Employees"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,74 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DsCustomerBlob",
+						"type": "DatasetReference"
+					},
+					"name": "sourceCustomer"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DsCustomer",
+						"type": "DatasetReference"
+					},
+					"name": "sinkCustomer"
+				}
+			],
+			"transformations": [
+				{
+					"name": "filterNewRows"
+				},
+				{
+					"name": "arUpsert"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     pWatermark as string",
+				"}",
+				"source(output(",
+				"          CustomerId as string,",
+				"          CustomerName as string,",
+				"          Country as string,",
+				"          LastUpdatedDate as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> sourceCustomer",
+				"sourceCustomer filter(toTimestamp(LastUpdatedDate, 'yyyy-MM-dd HH:mm:ss') > toTimestamp($pWatermark)) ~> filterNewRows",
+				"filterNewRows alterRow(upsertIf(true())) ~> arUpsert",
+				"arUpsert sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          CustomerId as integer,",
+				"          CustomerName as string,",
+				"          Country as string,",
+				"          LastUpdatedDate as timestamp",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     keys:['CustomerId'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 1,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          CustomerId,",
+				"          CustomerName,",
+				"          Country,",
+				"          LastUpdatedDate",
+				"     )) ~> sinkCustomer"
+			]
+		}
+	}
+}
