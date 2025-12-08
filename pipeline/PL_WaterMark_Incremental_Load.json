@@ -5,14 +5,7 @@
 			{
 				"name": "LP_WaterMark_Value",
 				"type": "Lookup",
-				"dependsOn": [
-					{
-						"activity": "Log_Start",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -39,7 +32,7 @@
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
-						"activity": "LP_WaterMark_Value",
+						"activity": "Log_Start",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -101,7 +94,14 @@
 			{
 				"name": "Log_Start",
 				"type": "SqlServerStoredProcedure",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "LP_WaterMark_Value",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
