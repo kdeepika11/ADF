@@ -169,7 +169,7 @@
 					"storedProcedureParameters": {
 						"RowsWritten": {
 							"value": {
-								"value": "@int(activity('Chk_Incremental_data').output.runStatus.metrics.sink1.rowsWritten)",
+								"value": "@int(activity('Chk_Incremental_data').output.runStatus.metrics.sinkCustomer.rowsWritten)",
 								"type": "Expression"
 							},
 							"type": "Int32"
