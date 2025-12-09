@@ -1,0 +1,59 @@
+{
+	"name": "DS_Csv_Generic",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"FolderName": {
+				"type": "string"
+			},
+			"FileName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().FileName",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().FolderName",
+					"type": "Expression"
+				},
+				"container": "raw"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "OrderId",
+				"type": "String"
+			},
+			{
+				"name": "CustId",
+				"type": "String"
+			},
+			{
+				"name": "OrderDate",
+				"type": "String"
+			},
+			{
+				"name": "TotalAmount",
+				"type": "String"
+			},
+			{
+				"name": "LastUpdatedDate",
+				"type": "String"
+			}
+		]
+	}
+}

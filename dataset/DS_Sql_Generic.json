@@ -1,0 +1,57 @@
+{
+	"name": "DS_Sql_Generic",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"TableName": {
+				"type": "string",
+				"defaultValue": "dbo.Products"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ConfigId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "SourceFolder",
+				"type": "nvarchar"
+			},
+			{
+				"name": "FileNamePattern",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TargetTableName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "WatermarkColumn",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LastWatermark",
+				"type": "datetime2",
+				"scale": 3
+			},
+			{
+				"name": "IsActive",
+				"type": "bit"
+			},
+			{
+				"name": "Notes",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "ETL_CsvMultiTableConfig"
+		}
+	}
+}

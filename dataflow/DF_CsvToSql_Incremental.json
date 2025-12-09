@@ -1,0 +1,71 @@
+{
+	"name": "DF_CsvToSql_Incremental",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Csv_Generic",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Sql_Generic",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "filter1"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     p_SourceFolder as string,",
+				"     p_FileName as string,",
+				"     p_TargetTableName as string,",
+				"     p_WatermarkColumn as string,",
+				"     p_WatermarkValue as string",
+				"}",
+				"source(output(",
+				"          OrderId as string,",
+				"          CustId as string,",
+				"          OrderDate as string,",
+				"          TotalAmount as string,",
+				"          LastUpdatedDate as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 filter(toTimestamp(byName($p_WatermarkColumn)) > toTimestamp($p_WatermarkValue)) ~> filter1",
+				"filter1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          ConfigId as integer,",
+				"          SourceFolder as string,",
+				"          FileNamePattern as string,",
+				"          TargetTableName as string,",
+				"          WatermarkColumn as string,",
+				"          LastWatermark as timestamp,",
+				"          IsActive as boolean,",
+				"          Notes as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+			]
+		}
+	}
+}
